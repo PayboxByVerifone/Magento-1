@@ -525,9 +525,15 @@ class Paybox_Epayment_Model_Paybox
         $address2 = (is_array($address->getStreet()) && array_key_exists(1,$address->getStreet())) ? $this->remove_accents(str_replace(".","",$address->getStreet()[1])) : "";
         $zipCode = $address->getPostcode();
         $city = trim($this->remove_accents($address->getCity()));
+        
+        // FIX(LkpPo): class sf3xep/IsoCountry doesn't exists...
+		//$IsoCountry = Mage::helper('sf3xep/IsoCountry');
+		//$IsoCountry->load($address->country_id);
+		//$countryCode = $IsoCountry->IsoCode;
+		
+        // FIX(LkpPo): ... but we do not want to validate a phone, just get a code linked to the Alpha2 code of the country.
 		$IsoCountry = Mage::helper('pbxep/IsoCountry');
-		$IsoCountry->load($address->country_id);
-		$countryCode = $IsoCountry->IsoCode;
+		$countryCode = $IsoCountry->getIsoCode($address->country_id);
 
 		$customer_id = $order->getCustomerId();
 		$customerData = Mage::getModel('customer/customer')->load($customer_id); 

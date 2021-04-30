@@ -305,7 +305,7 @@ class Paybox_Epayment_Helper_IsoCountry extends Mage_Core_Helper_Abstract
     );
 
 	public function load($code){
-		$this->mobile_validator = Mage::helper('sf3xep/MobileValidator');
+		$this->mobile_validator = Mage::helper('pbxep/MobileValidator');
 		$this->Country = $this->mobile_validator->getCountry($code);
 		if (is_array($this->Country)){
 			$this->PhoneCode = $this->Country['country_code'];
@@ -319,5 +319,11 @@ class Paybox_Epayment_Helper_IsoCountry extends Mage_Core_Helper_Abstract
     }
 	public function normalizeNumber($number){
 		return  $this->mobile_validator->normalize($number,$this->alpha2,true); 
+	}
+	public function getIsoCode($countryCodeAlpha2, $defaultCountryCodeAlpha2 = "FR"){
+	    if (array_key_exists($countryCodeAlpha2, $this->_countries))
+	        return $this->_countries[$countryCodeAlpha2]['num'];
+	    else
+	        return $this->_countries[$defaultCountryCodeAlpha2]['num'];
 	}
 }
